@@ -1,46 +1,114 @@
 // GET REQUEST
 function getTodos() {
-  console.log('GET Request');
+  axios
+    .get("https://jsonplaceholder.typicode.com/todos")
+    .then((response) => showOutput(response))
+    .catch((err) => console.log(err));
 }
 
 // POST REQUEST
 function addTodo() {
-  console.log('POST Request');
+  axios
+    .post("https://jsonplaceholder.typicode.com/todos", {
+      title:
+        "sunt aut facere repellat provident occaecati excepturi optio reprehenderit",
+      body: "Nice",
+    })
+    .then((response) => showOutput(response))
+    .catch((err) => console.log(err));
 }
 
 // PUT/PATCH REQUEST
 function updateTodo() {
-  console.log('PUT/PATCH Request');
+  axios
+    .put("https://jsonplaceholder.typicode.com/todos/1", {
+      title: "Nice Morning",
+      body: "Lots of Love",
+    })
+    .then((response) => showOutput(response))
+    .catch((err) => console.log(err));
 }
 
 // DELETE REQUEST
 function removeTodo() {
-  console.log('DELETE Request');
+  axios
+    .put("https://jsonplaceholder.typicode.com/todos/1")
+    .then((response) => showOutput(response))
+    .catch((err) => console.log(err));
 }
 
 // SIMULTANEOUS DATA
 function getData() {
-  console.log('Simultaneous Request');
+  axios
+    .all([
+      axios.get("https://jsonplaceholder.typicode.com/todos?_limit=5"),
+      axios.get("https://jsonplaceholder.typicode.com/posts?_limit=5"),
+    ])
+    .then(axios.spread((todos, post) => showOutput(post)))
+    .catch((err) => console.log(err));
 }
 
 // CUSTOM HEADERS
 function customHeaders() {
-  console.log('Custom Headers');
+  const config = {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "jwt token",
+    },
+  };
+
+  axios
+    .post(
+      "https://jsonplaceholder.typicode.com/todos",
+      {
+        title:
+          "sunt aut facere repellat provident occaecati excepturi optio reprehenderit",
+        body: "Nice",
+      },
+      config
+    )
+    .then((response) => showOutput(response))
+    .catch((err) => console.log(err));
 }
 
 // TRANSFORMING REQUESTS & RESPONSES
 function transformResponse() {
-  console.log('Transform Response');
+  const options = {
+    method: "post",
+    url: "https://jsonplaceholder.typicode.com/todos",
+    data: {
+      title: "Hello World",
+    },
+    transformResponse: axios.default.transformResponse.concat((data) => {
+      data.title = data.title.toUpperCase();
+      return data;
+    }),
+  };
+  axios(options)
+    .then((response) => showOutput(response))
+    .catch((err) => console.log(err));
 }
 
 // ERROR HANDLING
 function errorHandling() {
-  console.log('Error Handling');
+  axios
+    .all([
+      axios.get("https://jsonplaceholder.typicode.com/todgos?_limit=5"),
+      axios.get("https://jsonplaceholder.typicode.com/posts?_limit=5"),
+    ])
+    .then(axios.spread((todos, post) => showOutput(post)))
+    .catch((err) => {
+      if (err.response) {
+        console.log(err.response.data);
+        console.log(err.response.headers);
+        console.log(err.response.status);
+      }
+    });
 }
 
 // CANCEL TOKEN
 function cancelToken() {
-  console.log('Cancel Token');
+  console.log("Cancel Token");
 }
 
 // INTERCEPTING REQUESTS & RESPONSES
@@ -49,7 +117,7 @@ function cancelToken() {
 
 // Show output in browser
 function showOutput(res) {
-  document.getElementById('res').innerHTML = `
+  document.getElementById("res").innerHTML = `
   <div class="card card-body mb-4">
     <h5>Status: ${res.status}</h5>
   </div>
@@ -84,14 +152,14 @@ function showOutput(res) {
 }
 
 // Event listeners
-document.getElementById('get').addEventListener('click', getTodos);
-document.getElementById('post').addEventListener('click', addTodo);
-document.getElementById('update').addEventListener('click', updateTodo);
-document.getElementById('delete').addEventListener('click', removeTodo);
-document.getElementById('sim').addEventListener('click', getData);
-document.getElementById('headers').addEventListener('click', customHeaders);
+document.getElementById("get").addEventListener("click", getTodos);
+document.getElementById("post").addEventListener("click", addTodo);
+document.getElementById("update").addEventListener("click", updateTodo);
+document.getElementById("delete").addEventListener("click", removeTodo);
+document.getElementById("sim").addEventListener("click", getData);
+document.getElementById("headers").addEventListener("click", customHeaders);
 document
-  .getElementById('transform')
-  .addEventListener('click', transformResponse);
-document.getElementById('error').addEventListener('click', errorHandling);
-document.getElementById('cancel').addEventListener('click', cancelToken);
+  .getElementById("transform")
+  .addEventListener("click", transformResponse);
+document.getElementById("error").addEventListener("click", errorHandling);
+document.getElementById("cancel").addEventListener("click", cancelToken);
